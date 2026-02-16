@@ -13,7 +13,7 @@ export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#002147]/10 bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-[#001730] bg-[#002147]/95 text-white backdrop-blur-sm">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
           <Image 
@@ -35,8 +35,8 @@ export function SiteHeader() {
                 className={cn(
                   "rounded-lg px-3 py-2 text-sm font-medium transition",
                   isActive
-                    ? "bg-[#002147] text-white"
-                    : "text-black/80 hover:bg-[#f3f6fb] hover:text-[#002147]",
+                    ? "bg-white text-[#002147]"
+                    : "text-white/90 hover:bg-white/10 hover:text-white",
                 )}
               >
                 {item.label}
@@ -50,7 +50,7 @@ export function SiteHeader() {
           aria-label="Toggle navigation menu"
           aria-expanded={isMenuOpen}
           onClick={() => setIsMenuOpen((value) => !value)}
-          className="inline-flex rounded-lg border border-[#002147]/20 p-2 text-[#002147] md:hidden"
+          className="inline-flex rounded-lg border border-white/30 p-2 text-white md:hidden"
         >
           <span className="sr-only">Toggle mobile navigation</span>
           <svg viewBox="0 0 20 20" fill="currentColor" className="size-5" aria-hidden="true">
@@ -72,7 +72,7 @@ export function SiteHeader() {
       </div>
 
       {isMenuOpen ? (
-        <nav aria-label="Mobile navigation" className="border-t border-[#002147]/10 bg-white p-3 md:hidden">
+        <nav aria-label="Mobile navigation" className="border-t border-white/20 bg-[#002147] p-3 md:hidden">
           <ul className="space-y-1">
             {NAV_LINKS.map((item) => {
               const isActive = pathname === item.href;
@@ -84,8 +84,8 @@ export function SiteHeader() {
                     className={cn(
                       "block rounded-lg px-3 py-2 text-sm font-medium",
                       isActive
-                        ? "bg-[#002147] text-white"
-                        : "text-black/80 hover:bg-[#f3f6fb] hover:text-[#002147]",
+                        ? "bg-white text-[#002147]"
+                        : "text-white/90 hover:bg-white/10 hover:text-white",
                     )}
                   >
                     {item.label}
