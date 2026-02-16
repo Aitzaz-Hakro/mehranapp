@@ -20,16 +20,55 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  keywords: [
+    "MUET past papers",
+    "MUET past papers 2024",
+    "MUET past papers 2023",
+    "MUET past papers 2022",
+    "MUET past papers 2021",
+    "MUET past papers 2020",
+    "MUET past papers 2019",
+    "MUET past papers 2018",
+    "MUET past papers 2017",
+    "MUET past papers 2016",
+    "MUET achievements",
+    "MUET student portal",
+    "Mehran University past papers",
+    "Mehran University achievements",
+    "engineering past papers Pakistan",
+    "MUET teacher wise past papers",
+    "department wise past papers",
+    "semester wise past papers",
+    "MUET scholar archive",
+    "MUET students",
+    "Mehran University achievers",
+    "MUET exam preparation",
+  ],
   metadataBase: new URL("https://mehranapp.vercel.app"),
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     type: "website",
+    url: "https://mehranapp.vercel.app",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Mehran APP - MUET Achievements & Past Papers",
+      },
+    ],
     siteName: SITE_NAME,
   },
-  
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ["/og-image.png"],
+  },
+
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.svg",
   },
 };
 
