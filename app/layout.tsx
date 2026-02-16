@@ -44,12 +44,12 @@ export const metadata: Metadata = {
     "Mehran University achievers",
     "MUET exam preparation",
   ],
-  metadataBase: new URL("https://mehranapp.vercel.app"),
+  metadataBase: new URL("https://mehranapp.vercel.app/"),
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     type: "website",
-    url: "https://mehranapp.vercel.app",
+    url: "https://mehranapp.vercel.app/",
     images: [
       {
         url: "/og-image.png",
