@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# mehranapp
 
-## Getting Started
+MUET Scholar Archive is a production-ready, mobile-first academic SaaS platform built with Next.js App Router, TypeScript, Supabase, and Tailwind CSS.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js (App Router)
+- TypeScript
+- Supabase (Database, Auth, Storage)
+- Tailwind CSS v4
+
+## Features
+
+- Landing page with institutional branding and clean UX
+- Past papers search with server-side filtering and debounced filter inputs
+- Achievements directory with polished cards and filters
+- Loading skeletons, empty states, and error boundaries
+- Sticky responsive header with mobile navigation
+- Admin-only paper upload page (Supabase Auth + role gate)
+- SEO metadata and favicon support
+
+## Folder Structure
+
+```text
+app/
+	achievements/
+		error.tsx
+		loading.tsx
+		page.tsx
+	admin/
+		upload/
+			page.tsx
+	login/
+		page.tsx
+	past-papers/
+		error.tsx
+		loading.tsx
+		page.tsx
+	globals.css
+	layout.tsx
+	page.tsx
+components/
+	achievements/
+	admin/
+	home/
+	layout/
+	past-papers/
+	ui/
+lib/
+	supabase/
+	constants.ts
+	queries.ts
+	utils.ts
+supabase/
+	schema.sql
+	seed.sql
+types/
+	database.ts
+	filters.ts
+proxy.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Supabase Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Create a Supabase project.
+2. In SQL Editor, run `supabase/schema.sql`.
+3. Run `supabase/seed.sql` for sample data.
+4. Create a public storage bucket named `papers`.
+5. Add at least one authenticated user in Supabase Auth.
+6. Insert admin role for that user in `profiles`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sql
+insert into public.profiles (id, role)
+values ('<auth_user_uuid>', 'admin')
+on conflict (id) do update set role = excluded.role;
+```
 
-## Learn More
+## Environment Configuration
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.example` to `.env.local` and fill values:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cp .env.example .env.local
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_PUBLIC_KEY
+```
 
-## Deploy on Vercel
+## Local Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Install dependencies and run:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Database Design
+
+### `past_papers`
+
+- `id` (uuid)
+- `teacher_name`
+- `department`
+- `semester`
+- `course`
+- `year`
+- `file_url`
+- `created_at`
+
+Indexes included:
+
+- `teacher_name`
+- `department`
+- `semester`
+- `course`
+
+### `achievements`
+
+- `id` (uuid)
+- `student_name`
+- `department`
+- `achievement_title`
+- `description`
+- `github_link`
+- `linkedin_link`
+- `photo_url`
+- `created_at`
+
+### `profiles`
+
+- `id` (references `auth.users.id`)
+- `role` (`admin` | `student`)
+- `created_at`
+
+## Production Deployment (Vercel)
+
+1. Push repository to GitHub.
+2. Import project in Vercel.
+3. Set environment variables from `.env.local` in Vercel Project Settings.
+4. Deploy.
+5. Re-deploy after future environment changes.
+
+Recommended checks:
+
+- `npm run lint`
+- `npm run build`
+
+## Notes
+
+- Filtering is server-side using Supabase queries.
+- Debounce is applied in client filter panels for instant-feel UX.
+- `app/admin/upload` is protected by auth and admin role check.
