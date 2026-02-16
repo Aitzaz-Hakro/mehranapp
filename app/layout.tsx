@@ -55,7 +55,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mehran APP - MUET Achievements & Past Papers",
+        alt: "Mehran APP - Find past papers of every department, semester, and course at MUET.",
       },
     ],
     siteName: SITE_NAME,
