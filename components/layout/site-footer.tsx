@@ -11,6 +11,15 @@ export function SiteFooter() {
 
         <div className="flex items-center gap-3">
           <a
+            href="https://www.linkedin.com/in/aitzazhassan2005"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn profile"
+            className="rounded-lg border border-white/30 px-3 py-1.5 font-medium text-white hover:bg-white/10"
+          >
+            LinkedIn
+          </a>
+          <a
             href="https://github.com/Aitzaz-Hakro"
             target="_blank"
             rel="noopener noreferrer"
@@ -19,15 +28,7 @@ export function SiteFooter() {
           >
             GitHub
           </a>
-          <a
-            href="https://www.linkedin.com/in/aitzaz-hassan"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn profile"
-            className="rounded-lg border border-white/30 px-3 py-1.5 font-medium text-white hover:bg-white/10"
-          >
-            LinkedIn
-          </a>
+       
         </div>
       </div>
     </footer>
