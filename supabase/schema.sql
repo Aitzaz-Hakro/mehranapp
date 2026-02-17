@@ -56,13 +56,9 @@ create policy "Users can read own profile"
   to authenticated
   using (auth.uid() = id);
 
-create policy "Admins can insert past papers"
+create policy "Public can insert past papers"
   on public.past_papers
   for insert
-  to authenticated
-  with check (
-    exists (
-      select 1 from public.profiles
-      where profiles.id = auth.uid() and profiles.role = 'admin'
-    )
-  );
+  to anon, authenticated
+  with check (true);
+

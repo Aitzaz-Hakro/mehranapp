@@ -23,7 +23,7 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
     event.preventDefault();
 
     if (!file) {
-      setMessage("Please choose a PDF file before uploading.");
+      setMessage("Please choose a PDF or image file before uploading.");
       return;
     }
 
@@ -75,7 +75,7 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
   return (
     <form onSubmit={onSubmit} className="rounded-lg border border-[#002147]/10 bg-white p-6 shadow-sm">
       <h2 className="text-xl font-semibold text-[#002147]">Upload Past Paper</h2>
-      <p className="mt-1 text-sm text-black/70">Admin-only upload flow connected to Supabase Storage.</p>
+      <p className="mt-1 text-sm text-black/70">Upload flow connected to Supabase Storage.</p>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-medium text-black/80">
@@ -146,10 +146,10 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
         </label>
 
         <label className="text-sm font-medium text-black/80">
-          PDF file
+          File (PDF, PNG, JPG, JPEG)
           <input
             type="file"
-            accept="application/pdf"
+            accept="application/pdf,image/png,image/jpeg"
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
             required
             className="mt-1 block w-full text-sm"

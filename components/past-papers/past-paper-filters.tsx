@@ -157,6 +157,7 @@ function FilterFields({
           className="mt-1 h-10 w-full rounded-lg border border-[#002147]/15 bg-white px-3 text-sm"
         >
           <option value="">All departments</option>
+          <option value="">Computer Systems</option>
           {departments.map((option) => (
             <option key={option} value={option}>
               {option}

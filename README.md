@@ -16,7 +16,7 @@ MUET Scholar Archive is a production-ready, mobile-first academic SaaS platform 
 - Achievements directory with polished cards and filters
 - Loading skeletons, empty states, and error boundaries
 - Sticky responsive header with mobile navigation
-- Admin-only paper upload page (Supabase Auth + role gate)
+- Public paper upload page
 - SEO metadata and favicon support
 
 ## Folder Structure
@@ -66,14 +66,7 @@ proxy.ts
 2. In SQL Editor, run `supabase/schema.sql`.
 3. Run `supabase/seed.sql` for sample data.
 4. Create a public storage bucket named `papers`.
-5. Add at least one authenticated user in Supabase Auth.
-6. Insert admin role for that user in `profiles`:
-
-```sql
-insert into public.profiles (id, role)
-values ('<auth_user_uuid>', 'admin')
-on conflict (id) do update set role = excluded.role;
-```
+5. Configure public insert/upload policies for your use case.
 
 ## Environment Configuration
 
@@ -154,4 +147,4 @@ Recommended checks:
 
 - Filtering is server-side using Supabase queries.
 - Debounce is applied in client filter panels for instant-feel UX.
-- `app/admin/upload` is protected by auth and admin role check.
+- `app/admin/upload` is publicly accessible.
