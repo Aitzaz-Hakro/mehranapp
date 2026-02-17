@@ -3,14 +3,50 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const loadUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setIsSignedIn(Boolean(user));
+      setIsLoadingAuth(false);
+    };
+
+    void loadUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(Boolean(session?.user));
+      setIsLoadingAuth(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setIsSignedIn(false);
+    setIsMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#001730] bg-[#002147]/95 text-white backdrop-blur-sm">
@@ -43,6 +79,23 @@ export function SiteHeader() {
               </Link>
             );
           })}
+
+          {isLoadingAuth ? null : isSignedIn ? (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="rounded-lg border border-white/30 px-3 py-2 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href={`/login?next=${encodeURIComponent(pathname || "/")}`}
+              className="rounded-lg border border-white/30 px-3 py-2 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+            >
+              Sign in
+            </Link>
+          )}
         </nav>
 
         <button
@@ -93,6 +146,28 @@ export function SiteHeader() {
                 </li>
               );
             })}
+
+            {isLoadingAuth ? null : (
+              <li>
+                {isSignedIn ? (
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white"
+                  >
+                    Sign out
+                  </button>
+                ) : (
+                  <Link
+                    href={`/login?next=${encodeURIComponent(pathname || "/")}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white"
+                  >
+                    Sign in
+                  </Link>
+                )}
+              </li>
+            )}
           </ul>
         </nav>
       ) : null}

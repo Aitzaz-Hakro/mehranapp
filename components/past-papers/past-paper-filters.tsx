@@ -72,7 +72,15 @@ export function PastPaperFilters({ filters, departments, types, semesters, cours
       <details className="rounded-lg border border-[#002147]/10 bg-white p-4 shadow-sm lg:hidden">
         <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-[#002147]">
           <span>Filters</span>
-            {/* <span aria-hidden="true" className="text-base leading-none transition-transform duration-300 group-open:rotate-180">▼</span> */}
+          <span aria-hidden="true" className="inline-flex items-center">
+            <svg viewBox="0 0 20 20" fill="currentColor" className="size-5">
+              <path
+                fillRule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
         </summary>
         <div className="mt-4 space-y-4">
           <FilterFields
