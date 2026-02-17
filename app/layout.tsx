@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
@@ -66,9 +67,15 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: SITE_NAME,
+  },
 
   icons: {
     icon: "/favicon.svg",
+    apple: "/logo.png",
   },
 };
 

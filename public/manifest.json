@@ -9,8 +9,13 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icons/favicon.svg",
-      "sizes": "192x192",
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
       "type": "image/svg+xml"
     }
   ]
