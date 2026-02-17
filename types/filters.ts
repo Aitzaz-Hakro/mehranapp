@@ -1,4 +1,5 @@
 export interface PastPaperFilters {
+  type?: "mid term" | "final term";
   department?: string;
   semester?: string;
   course?: string;
@@ -13,6 +14,7 @@ export interface AchievementFilters {
 
 export interface SelectOptions {
   departments: string[];
+  types?: string[];
   semesters?: string[];
   courses?: string[];
   achievementTitles?: string[];

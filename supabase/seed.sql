@@ -1,8 +1,8 @@
-insert into public.past_papers (teacher_name, department, semester, course, year, file_url)
+insert into public.past_papers (teacher_name, type, department, semester, course, year, file_url)
 values
-  ('Dr. Adeel Memon', 'Computer Systems', 'Semester 5', 'Data Structures', 2024, 'https://example.com/papers/data-structures-2024.pdf'),
-  ('Prof. Sana Qazi', 'Software', 'Semester 6', 'Software Engineering', 2023, 'https://example.com/papers/software-engineering-2023.pdf'),
-  ('Dr. Kamran Ali', 'Electrical', 'Semester 4', 'Circuit Analysis', 2022, 'https://example.com/papers/circuit-analysis-2022.pdf');
+  ('Dr. Adeel Memon', 'mid term', 'Computer Systems', 'Semester 5', 'Data Structures', 2024, 'https://example.com/papers/data-structures-2024.pdf'),
+  ('Prof. Sana Qazi', 'final term', 'Software', 'Semester 6', 'Software Engineering', 2023, 'https://example.com/papers/software-engineering-2023.pdf'),
+  ('Dr. Kamran Ali', 'mid term', 'Electrical', 'Semester 4', 'Circuit Analysis', 2022, 'https://example.com/papers/circuit-analysis-2022.pdf');
 
 insert into public.achievements (student_name, department, achievement_title, description, github_link, linkedin_link, photo_url)
 values

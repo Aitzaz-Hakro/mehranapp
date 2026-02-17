@@ -3,6 +3,7 @@ create extension if not exists "pgcrypto";
 create table if not exists public.past_papers (
   id uuid primary key default gen_random_uuid(),
   teacher_name text not null,
+  type text not null check (type in ('mid term', 'final term')),
   department text not null,
   semester text not null,
   course text not null,

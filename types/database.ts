@@ -7,6 +7,7 @@ export interface Database {
         Row: {
           id: string;
           teacher_name: string;
+          type: "mid term" | "final term";
           department: string;
           semester: string;
           course: string;
@@ -17,6 +18,7 @@ export interface Database {
         Insert: {
           id?: string;
           teacher_name: string;
+          type: "mid term" | "final term";
           department: string;
           semester: string;
           course: string;
@@ -27,6 +29,7 @@ export interface Database {
         Update: {
           id?: string;
           teacher_name?: string;
+          type?: "mid term" | "final term";
           department?: string;
           semester?: string;
           course?: string;

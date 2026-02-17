@@ -8,22 +8,24 @@ import type { PastPaperFilters } from "@/types/filters";
 interface PastPaperFilterProps {
   filters: PastPaperFilters;
   departments: string[];
+  types: string[];
   semesters: string[];
   courses: string[];
 }
 
-export function PastPaperFilters({ filters, departments, semesters, courses }: PastPaperFilterProps) {
+export function PastPaperFilters({ filters, departments, types, semesters, courses }: PastPaperFilterProps) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const [type, setType] = useState(filters.type ?? "");
   const [department, setDepartment] = useState(filters.department ?? "");
   const [semester, setSemester] = useState(filters.semester ?? "");
   const [course, setCourse] = useState(filters.course ?? "");
   const [teacher, setTeacher] = useState(filters.teacher ?? "");
 
   const query = useMemo(
-    () => ({ department, semester, course, teacher }),
-    [department, semester, course, teacher],
+    () => ({ type, department, semester, course, teacher }),
+    [type, department, semester, course, teacher],
   );
 
   useEffect(() => {
@@ -32,6 +34,10 @@ export function PastPaperFilters({ filters, departments, semesters, courses }: P
 
       if (query.department) {
         params.set("department", query.department);
+      }
+
+      if (query.type) {
+        params.set("type", query.type);
       }
 
       if (query.semester) {
@@ -54,6 +60,7 @@ export function PastPaperFilters({ filters, departments, semesters, courses }: P
   }, [pathname, query, router]);
 
   const resetAll = () => {
+    setType("");
     setDepartment("");
     setSemester("");
     setCourse("");
@@ -63,18 +70,22 @@ export function PastPaperFilters({ filters, departments, semesters, courses }: P
   return (
     <>
       <details className="rounded-lg border border-[#002147]/10 bg-white p-4 shadow-sm lg:hidden">
-        <summary className="cursor-pointer list-none text-sm font-semibold text-[#002147]">
-          Filters
+        <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-[#002147]">
+          <span>Filters</span>
+            {/* <span aria-hidden="true" className="text-base leading-none transition-transform duration-300 group-open:rotate-180">▼</span> */}
         </summary>
         <div className="mt-4 space-y-4">
           <FilterFields
+            type={type}
             department={department}
             semester={semester}
             course={course}
             teacher={teacher}
+            types={types}
             departments={departments}
             semesters={semesters}
             courses={courses}
+            setType={setType}
             setDepartment={setDepartment}
             setSemester={setSemester}
             setCourse={setCourse}
@@ -102,13 +113,16 @@ export function PastPaperFilters({ filters, departments, semesters, courses }: P
           </button>
         </div>
         <FilterFields
+          type={type}
           department={department}
           semester={semester}
           course={course}
           teacher={teacher}
+          types={types}
           departments={departments}
           semesters={semesters}
           courses={courses}
+          setType={setType}
           setDepartment={setDepartment}
           setSemester={setSemester}
           setCourse={setCourse}
@@ -120,13 +134,16 @@ export function PastPaperFilters({ filters, departments, semesters, courses }: P
 }
 
 interface FilterFieldsProps {
+  type: string;
   department: string;
   semester: string;
   course: string;
   teacher: string;
+  types: string[];
   departments: string[];
   semesters: string[];
   courses: string[];
+  setType: (value: string) => void;
   setDepartment: (value: string) => void;
   setSemester: (value: string) => void;
   setCourse: (value: string) => void;
@@ -134,13 +151,16 @@ interface FilterFieldsProps {
 }
 
 function FilterFields({
+  type,
   department,
   semester,
   course,
   teacher,
+  types,
   departments,
   semesters,
   courses,
+  setType,
   setDepartment,
   setSemester,
   setCourse,
@@ -148,6 +168,23 @@ function FilterFields({
 }: FilterFieldsProps) {
   return (
     <div className="space-y-3">
+      <label className="block text-sm font-medium text-black/80">
+        Type
+        <select
+          aria-label="Filter by type"
+          value={type}
+          onChange={(event) => setType(event.target.value)}
+          className="mt-1 h-10 w-full rounded-lg border border-[#002147]/15 bg-white px-3 text-sm"
+        >
+          <option value="">All types</option>
+          {types.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+
       <label className="block text-sm font-medium text-black/80">
         Department
         <select

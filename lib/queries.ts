@@ -10,7 +10,10 @@ function uniqueSorted(values: string[]) {
 }
 
 export function parsePastPaperFilters(raw?: Record<string, string | string[] | undefined>): PastPaperFilters {
+  const typeValue = normalizeSearchParam(raw?.type);
+
   return {
+    type: typeValue === "mid term" || typeValue === "final term" ? typeValue : undefined,
     department: normalizeSearchParam(raw?.department),
     semester: normalizeSearchParam(raw?.semester),
     course: normalizeSearchParam(raw?.course),
@@ -29,14 +32,16 @@ export function parseAchievementFilters(raw?: Record<string, string | string[] |
 export async function getPastPaperOptions() {
   const supabase = await createClient();
 
-  const [{ data: departments }, { data: semesters }, { data: courses }] = await Promise.all([
+  const [{ data: departments }, { data: types }, { data: semesters }, { data: courses }] = await Promise.all([
     supabase.from("past_papers").select("department"),
+    supabase.from("past_papers").select("type"),
     supabase.from("past_papers").select("semester"),
     supabase.from("past_papers").select("course"),
   ]);
 
   return {
     departments: uniqueSorted((departments ?? []).map((row) => row.department)),
+    types: uniqueSorted((types ?? []).map((row) => row.type)),
     semesters: uniqueSorted((semesters ?? []).map((row) => row.semester)),
     courses: uniqueSorted((courses ?? []).map((row) => row.course)),
   };
@@ -67,6 +72,10 @@ export async function getPastPapers(filters: PastPaperFilters): Promise<PastPape
 
   if (filters.department) {
     query = query.eq("department", filters.department);
+  }
+
+  if (filters.type) {
+    query = query.eq("type", filters.type);
   }
 
   if (filters.semester) {

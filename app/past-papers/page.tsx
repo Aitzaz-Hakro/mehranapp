@@ -29,7 +29,7 @@ export default async function PastPapersPage({
       <header className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight text-[#002147]">Past Papers</h1>
         <p className="mt-2 text-sm text-black/70">
-          Filter by teacher, department, semester, and course to find the right paper instantly.
+          Filter by type, teacher, department, semester, and course to find the right paper instantly.
         </p>
       </header>
 
@@ -37,6 +37,7 @@ export default async function PastPapersPage({
         <PastPaperFilters
           filters={filters}
           departments={options.departments}
+          types={options.types ?? []}
           semesters={options.semesters ?? []}
           courses={options.courses ?? []}
         />

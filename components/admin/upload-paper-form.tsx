@@ -9,8 +9,9 @@ interface UploadFormProps {
   semesters: string[];
 }
 
-export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
+export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
   const [teacherName, setTeacherName] = useState("");
+  const [type, setType] = useState<"mid term" | "final term" | "">("");
   const [department, setDepartment] = useState("");
   const [semester, setSemester] = useState("");
   const [course, setCourse] = useState("");
@@ -24,6 +25,11 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
 
     if (!file) {
       setMessage("Please choose a PDF or image file before uploading.");
+      return;
+    }
+
+    if (!type) {
+      setMessage("Please select paper type before uploading.");
       return;
     }
 
@@ -46,6 +52,7 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
 
       const { error: insertError } = await supabase.from("past_papers").insert({
         teacher_name: teacherName,
+        type,
         department,
         semester,
         course,
@@ -59,6 +66,7 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
 
       setMessage("Past paper uploaded successfully.");
       setTeacherName("");
+      setType("");
       setDepartment("");
       setSemester("");
       setCourse("");
@@ -86,6 +94,20 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
             required
             className="mt-1 h-11 w-full rounded-lg border border-[#002147]/15 px-3"
           />
+        </label>
+
+        <label className="text-sm font-medium text-black/80">
+          Type
+          <select
+            value={type}
+            onChange={(event) => setType(event.target.value as "mid term" | "final term" | "")}
+            required
+            className="mt-1 h-11 w-full rounded-lg border border-[#002147]/15 px-3"
+          >
+            <option value="">Select type</option>
+            <option value="mid term">mid term</option>
+            <option value="final term">final term</option>
+          </select>
         </label>
 
         <label className="text-sm font-medium text-black/80">
@@ -133,28 +155,37 @@ export function UploadPaperForm({ departments, semesters }: UploadFormProps) {
         </label>
 
         <label className="text-sm font-medium text-black/80">
-          Year
+          Batch
           <input
             type="number"
             value={year}
             onChange={(event) => setYear(event.target.value)}
             required
-            min={2000}
-            max={2100}
+            min={2022}
+            max={2030}
             className="mt-1 h-11 w-full rounded-lg border border-[#002147]/15 px-3"
           />
         </label>
 
-        <label className="text-sm font-medium text-black/80">
-          File (PDF, PNG, JPG, JPEG)
+        <div className="sm:col-span-2">
+          <p className="text-sm font-medium text-black/80">Upload File</p>
+          <label
+            htmlFor="paper-file"
+            className="mt-1 flex min-h-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#002147]/25 bg-[#f3f6fb] px-4 py-5 text-center"
+          >
+            <span className="text-sm font-semibold text-[#002147]">Click to choose file</span>
+            <span className="mt-1 text-xs text-black/70">PDF, PNG, JPG, JPEG</span>
+            <span className="mt-2 text-xs text-black/75">{file ? file.name : "No file selected"}</span>
+          </label>
           <input
+            id="paper-file"
             type="file"
             accept="application/pdf,image/png,image/jpeg"
             onChange={(event) => setFile(event.target.files?.[0] ?? null)}
             required
-            className="mt-1 block w-full text-sm"
+            className="sr-only"
           />
-        </label>
+        </div>
       </div>
 
       <button
