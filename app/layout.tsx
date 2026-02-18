@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   verification: {
-    google: "google-site-verification=3K9c7mhtk-qDF-y3090qTzPX-iZdRCEwW83ruwWDyUg",
+    google: "6FHF-lhzSA10Rwrfqof3DyiUNQ9ZcCpik06HVWa_F9s",
   },
   appleWebApp: {
     capable: true,
