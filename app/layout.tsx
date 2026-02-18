@@ -67,6 +67,9 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
+  verification: {
+    google: "google-site-verification=3K9c7mhtk-qDF-y3090qTzPX-iZdRCEwW83ruwWDyUg",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
