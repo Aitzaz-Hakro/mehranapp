@@ -1,23 +1,14 @@
 import type { MetadataRoute } from "next";
 
-const getBaseUrl = () => {
-  const vercelUrl = process.env.VERCEL_URL;
-
-  if (vercelUrl) {
-    return `https://${vercelUrl}`;
-  }
-
-  return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-};
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = getBaseUrl();
+  const baseUrl = "https://mehranapp.vercel.app";
   const now = new Date();
 
   return [
     {
       url: `${baseUrl}/`,
-      lastModified: now,
+      lastModified: now, 
       changeFrequency: "weekly",
       priority: 1,
     },

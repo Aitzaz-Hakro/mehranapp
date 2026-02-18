@@ -79,6 +79,8 @@ cp .env.example .env.local
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_PUBLIC_KEY
+NEXT_PUBLIC_SUPER_ADMIN_EMAIL=you@example.com
+SUPER_ADMIN_EMAIL=you@example.com
 ```
 
 ## Local Development

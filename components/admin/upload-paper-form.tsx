@@ -37,6 +37,15 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
     setMessage(null);
 
     const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setMessage("Please sign in before uploading.");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const filePath = `past-papers/${Date.now()}-${file.name}`;
@@ -58,6 +67,7 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
         course,
         year: Number(year),
         file_url: publicData.publicUrl,
+        uploaded_by: user.id,
       });
 
       if (insertError) {
@@ -74,7 +84,16 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
       setFile(null);
     } catch (error) {
       const fallbackMessage = "Upload failed. Please verify your input and storage configuration.";
-      setMessage(error instanceof Error ? error.message : fallbackMessage);
+
+      if (error instanceof Error) {
+        setMessage(error.message || fallbackMessage);
+      } else if (error && typeof error === "object" && "message" in error) {
+        const maybeError = error as { message?: string; code?: string; details?: string; hint?: string };
+        const parts = [maybeError.code, maybeError.message, maybeError.details, maybeError.hint].filter(Boolean);
+        setMessage(parts.length > 0 ? parts.join(" | ") : fallbackMessage);
+      } else {
+        setMessage(fallbackMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }

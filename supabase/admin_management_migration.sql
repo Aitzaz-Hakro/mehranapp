@@ -1,83 +1,35 @@
-create extension if not exists "pgcrypto";
+-- Run this in Supabase SQL Editor for existing databases.
 
-create table if not exists public.past_papers (
-  id uuid primary key default gen_random_uuid(),
-  teacher_name text not null,
-  type text not null check (type in ('mid term', 'final term')),
-  department text not null,
-  semester text not null,
-  course text not null,
-  year integer not null check (year >= 2000 and year <= 2100),
-  file_url text not null,
-  uploaded_by uuid references auth.users(id) on delete set null,
-  created_at timestamptz not null default now()
-);
+alter table public.past_papers
+  add column if not exists uploaded_by uuid references auth.users(id) on delete set null;
 
-create table if not exists public.achievements (
-  id uuid primary key default gen_random_uuid(),
-  student_name text not null,
-  department text not null,
-  achievement_title text not null,
-  description text not null,
-  github_link text,
-  linkedin_link text,
-  photo_url text not null,
-  created_at timestamptz not null default now()
-);
-
-create table if not exists public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  role text not null default 'student' check (role in ('admin', 'student', 'super_admin')),
-  admin_for_department text,
-  created_at timestamptz not null default now()
-);
-
-create index if not exists idx_past_papers_teacher_name on public.past_papers (teacher_name);
-create index if not exists idx_past_papers_department on public.past_papers (department);
-create index if not exists idx_past_papers_semester on public.past_papers (semester);
-create index if not exists idx_past_papers_course on public.past_papers (course);
 create index if not exists idx_past_papers_uploaded_by on public.past_papers (uploaded_by);
 
-alter table public.past_papers enable row level security;
-alter table public.achievements enable row level security;
-alter table public.profiles enable row level security;
+alter table public.profiles
+  drop constraint if exists profiles_role_check;
 
-create policy "Public can read past papers"
-  on public.past_papers
-  for select
-  to anon, authenticated
-  using (true);
+alter table public.profiles
+  add constraint profiles_role_check
+  check (role in ('admin', 'student', 'super_admin'));
 
-create policy "Public can read achievements"
-  on public.achievements
-  for select
-  to anon, authenticated
-  using (true);
+alter table public.profiles
+  add column if not exists admin_for_department text;
 
-create policy "Users can read own profile"
-  on public.profiles
-  for select
-  to authenticated
-  using (auth.uid() = id);
+-- Mark your own account as super admin (replace email first)
+insert into public.profiles (id, role)
+select id, 'super_admin'
+from auth.users
+where lower(email) = lower('you@example.com')
+on conflict (id) do update set role = excluded.role;
 
-create policy "Super admins can read all profiles"
-  on public.profiles
-  for select
-  to authenticated
-  using (public.is_current_user_super_admin());
+-- Optional: backfill uploader for old records where unknown
+-- update public.past_papers
+-- set uploaded_by = '<ADMIN_USER_UUID>'
+-- where uploaded_by is null;
 
-create policy "Super admins can insert profiles"
-  on public.profiles
-  for insert
-  to authenticated
-  with check (public.is_current_user_super_admin());
-
-create policy "Super admins can update profiles"
-  on public.profiles
-  for update
-  to authenticated
-  using (public.is_current_user_super_admin())
-  with check (public.is_current_user_super_admin());
+drop policy if exists "Public can insert past papers" on public.past_papers;
+drop policy if exists "Admins can insert past papers" on public.past_papers;
+drop policy if exists "Super admins can delete past papers" on public.past_papers;
 
 create policy "Admins can insert past papers"
   on public.past_papers
@@ -103,6 +55,28 @@ create policy "Super admins can delete past papers"
       where p.id = auth.uid() and p.role = 'super_admin'
     )
   );
+
+drop policy if exists "Super admins can read all profiles" on public.profiles;
+create policy "Super admins can read all profiles"
+  on public.profiles
+  for select
+  to authenticated
+  using (public.is_current_user_super_admin());
+
+drop policy if exists "Super admins can insert profiles" on public.profiles;
+create policy "Super admins can insert profiles"
+  on public.profiles
+  for insert
+  to authenticated
+  with check (public.is_current_user_super_admin());
+
+drop policy if exists "Super admins can update profiles" on public.profiles;
+create policy "Super admins can update profiles"
+  on public.profiles
+  for update
+  to authenticated
+  using (public.is_current_user_super_admin())
+  with check (public.is_current_user_super_admin());
 
 create or replace function public.get_admin_users()
 returns table (
@@ -168,12 +142,14 @@ insert into storage.buckets (id, name, public)
 values ('papers', 'papers', true)
 on conflict (id) do nothing;
 
+drop policy if exists "Public can read papers objects" on storage.objects;
 create policy "Public can read papers objects"
   on storage.objects
   for select
   to public
   using (bucket_id = 'papers');
 
+drop policy if exists "Admins can upload papers objects" on storage.objects;
 create policy "Admins can upload papers objects"
   on storage.objects
   for insert
@@ -187,6 +163,7 @@ create policy "Admins can upload papers objects"
     )
   );
 
+drop policy if exists "Super admins can delete papers objects" on storage.objects;
 create policy "Super admins can delete papers objects"
   on storage.objects
   for delete
@@ -217,4 +194,3 @@ $$;
 
 revoke all on function public.is_current_user_uploader() from public;
 grant execute on function public.is_current_user_uploader() to authenticated;
-

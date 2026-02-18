@@ -14,9 +14,55 @@ export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [canUpload, setCanUpload] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
+
+    const superAdminEmail = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase();
+
+    const resolveUploadAccess = async (
+      user: { id: string; email?: string | null; app_metadata?: Record<string, unknown> } | null,
+    ) => {
+      if (!user) {
+        setCanUpload(false);
+        setIsSuperAdmin(false);
+        return;
+      }
+
+      const userEmail = user.email?.toLowerCase();
+      const hasSuperAdminMetadata = user.app_metadata?.is_super_admin === true;
+      const hasSuperAdminEmailAccess = Boolean(superAdminEmail && userEmail === superAdminEmail);
+      const { data: canUploadByRpc } = await supabase.rpc("is_current_user_uploader");
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      const { data: isSuperAdminByAuth } = await supabase.rpc("is_current_user_super_admin");
+      const hasUploaderAccess = Boolean(canUploadByRpc);
+
+      if (error) {
+        const hasSuperAdminAccess =
+          hasSuperAdminEmailAccess || hasSuperAdminMetadata || Boolean(isSuperAdminByAuth);
+        setCanUpload(hasUploaderAccess || hasSuperAdminAccess);
+        setIsSuperAdmin(hasSuperAdminAccess);
+        return;
+      }
+
+      const hasSuperAdminRole = profile?.role === "super_admin";
+      const hasSuperAdminAccess =
+        hasSuperAdminEmailAccess ||
+        hasSuperAdminMetadata ||
+        hasSuperAdminRole ||
+        Boolean(isSuperAdminByAuth);
+
+      setIsSuperAdmin(hasSuperAdminAccess);
+      setCanUpload(hasUploaderAccess || profile?.role === "admin" || hasSuperAdminAccess);
+    };
 
     const loadUser = async () => {
       const {
@@ -24,6 +70,7 @@ export function SiteHeader() {
       } = await supabase.auth.getUser();
 
       setIsSignedIn(Boolean(user));
+      await resolveUploadAccess(user);
       setIsLoadingAuth(false);
     };
 
@@ -32,8 +79,11 @@ export function SiteHeader() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsSignedIn(Boolean(session?.user));
-      setIsLoadingAuth(false);
+      void (async () => {
+        setIsSignedIn(Boolean(session?.user));
+        await resolveUploadAccess(session?.user ?? null);
+        setIsLoadingAuth(false);
+      })();
     });
 
     return () => {
@@ -45,7 +95,10 @@ export function SiteHeader() {
     const supabase = createClient();
     await supabase.auth.signOut();
     setIsSignedIn(false);
+    setCanUpload(false);
+    setIsSuperAdmin(false);
     setIsMenuOpen(false);
+    window.location.assign("/");
   };
 
   return (
@@ -79,6 +132,34 @@ export function SiteHeader() {
               </Link>
             );
           })}
+
+          {isLoadingAuth || !canUpload ? null : (
+            <Link
+              href="/admin/upload"
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm font-medium transition",
+                pathname === "/admin/upload"
+                  ? "bg-white text-[#002147]"
+                  : "text-white/90 hover:bg-white/10 hover:text-white",
+              )}
+            >
+              Upload PP
+            </Link>
+          )}
+
+          {isLoadingAuth || !isSuperAdmin ? null : (
+            <Link
+              href="/admin/manage-admins"
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm font-medium transition",
+                pathname === "/admin/manage-admins"
+                  ? "bg-white text-[#002147]"
+                  : "text-white/90 hover:bg-white/10 hover:text-white",
+              )}
+            >
+              Manage Admins
+            </Link>
+          )}
 
           {isLoadingAuth ? null : isSignedIn ? (
             <button
@@ -146,6 +227,40 @@ export function SiteHeader() {
                 </li>
               );
             })}
+
+            {isLoadingAuth || !canUpload ? null : (
+              <li>
+                <Link
+                  href="/admin/upload"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={cn(
+                    "block rounded-lg px-3 py-2 text-sm font-medium",
+                    pathname === "/admin/upload"
+                      ? "bg-white text-[#002147]"
+                      : "text-white/90 hover:bg-white/10 hover:text-white",
+                  )}
+                >
+                  Upload PP
+                </Link>
+              </li>
+            )}
+
+            {isLoadingAuth || !isSuperAdmin ? null : (
+              <li>
+                <Link
+                  href="/admin/manage-admins"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={cn(
+                    "block rounded-lg px-3 py-2 text-sm font-medium",
+                    pathname === "/admin/manage-admins"
+                      ? "bg-white text-[#002147]"
+                      : "text-white/90 hover:bg-white/10 hover:text-white",
+                  )}
+                >
+                  Manage Admins
+                </Link>
+              </li>
+            )}
 
             {isLoadingAuth ? null : (
               <li>

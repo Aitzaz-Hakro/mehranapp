@@ -13,6 +13,7 @@ export interface Database {
           course: string;
           year: number;
           file_url: string;
+          uploaded_by: string | null;
           created_at: string;
         };
         Insert: {
@@ -24,6 +25,7 @@ export interface Database {
           course: string;
           year: number;
           file_url: string;
+          uploaded_by?: string | null;
           created_at?: string;
         };
         Update: {
@@ -35,6 +37,7 @@ export interface Database {
           course?: string;
           year?: number;
           file_url?: string;
+          uploaded_by?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -78,24 +81,47 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
-          role: "admin" | "student";
+          role: "admin" | "student" | "super_admin";
+          admin_for_department: string | null;
           created_at: string;
         };
         Insert: {
           id: string;
-          role?: "admin" | "student";
+          role?: "admin" | "student" | "super_admin";
+          admin_for_department?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
-          role?: "admin" | "student";
+          role?: "admin" | "student" | "super_admin";
+          admin_for_department?: string | null;
           created_at?: string;
         };
         Relationships: [];
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      get_admin_users: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          role: string;
+          created_at: string;
+          admin_for_department: string | null;
+          email: string | null;
+          display_name: string | null;
+        }[];
+      };
+      is_current_user_super_admin: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+      is_current_user_uploader: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
