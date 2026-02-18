@@ -161,7 +161,7 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
             value={year}
             onChange={(event) => setYear(event.target.value)}
             required
-            min={2022}
+            min={2019}
             max={2030}
             className="mt-1 h-11 w-full rounded-lg border border-[#002147]/15 px-3"
           />
