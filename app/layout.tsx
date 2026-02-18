@@ -4,6 +4,7 @@ import Script from "next/script";
 import { SiteShell } from "@/components/layout/site-shell";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import "./globals.css";
+import { PostHogProvider } from "@/components/Providers/PostHogProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -89,6 +90,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <PostHogProvider>
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Script
@@ -106,5 +108,6 @@ export default function RootLayout({
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
+    </PostHogProvider>
   );
 }
