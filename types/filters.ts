@@ -17,5 +17,6 @@ export interface SelectOptions {
   types?: string[];
   semesters?: string[];
   courses?: string[];
+  departmentCourses?: Record<string, string[]>;
   achievementTitles?: string[];
 }

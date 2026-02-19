@@ -1,12 +1,27 @@
 import { createClient } from "@/lib/supabase/server";
+import { MUET_DEPARTMENTS, MUET_SEMESTERS } from "@/lib/constants";
 import { normalizeSearchParam } from "@/lib/utils";
 import type { Achievement, PastPaper } from "@/types/database";
 import type { AchievementFilters, PastPaperFilters } from "@/types/filters";
 
 function uniqueSorted(values: string[]) {
-  return Array.from(new Set(values.filter(Boolean))).sort((a, b) =>
-    a.localeCompare(b),
-  );
+  const normalizedValueMap = new Map<string, string>();
+
+  for (const rawValue of values) {
+    const value = rawValue.trim();
+
+    if (!value) {
+      continue;
+    }
+
+    const normalizedKey = value.toLocaleLowerCase();
+
+    if (!normalizedValueMap.has(normalizedKey)) {
+      normalizedValueMap.set(normalizedKey, value);
+    }
+  }
+
+  return Array.from(normalizedValueMap.values()).sort((a, b) => a.localeCompare(b));
 }
 
 export function parsePastPaperFilters(raw?: Record<string, string | string[] | undefined>): PastPaperFilters {
@@ -32,18 +47,55 @@ export function parseAchievementFilters(raw?: Record<string, string | string[] |
 export async function getPastPaperOptions() {
   const supabase = await createClient();
 
-  const [{ data: departments }, { data: types }, { data: semesters }, { data: courses }] = await Promise.all([
+  const [{ data: departments }, { data: types }, { data: semesters }, { data: courses }, { data: departmentCourseRows }] = await Promise.all([
     supabase.from("past_papers").select("department"),
     supabase.from("past_papers").select("type"),
     supabase.from("past_papers").select("semester"),
     supabase.from("past_papers").select("course"),
+    supabase.from("past_papers").select("department, course"),
   ]);
 
+  const normalizedDepartments = uniqueSorted([
+    ...MUET_DEPARTMENTS,
+    ...(departments ?? []).map((row) => row.department),
+  ]);
+
+  const canonicalDepartmentByKey = new Map(
+    normalizedDepartments.map((department) => [department.toLocaleLowerCase(), department]),
+  );
+
+  const departmentCourses = (departmentCourseRows ?? []).reduce<Record<string, string[]>>((acc, row) => {
+    const departmentValue = row.department.trim();
+    const courseValue = row.course.trim();
+
+    if (!departmentValue || !courseValue) {
+      return acc;
+    }
+
+    const normalizedDepartmentKey = departmentValue.toLocaleLowerCase();
+    const canonicalDepartment = canonicalDepartmentByKey.get(normalizedDepartmentKey) ?? departmentValue;
+
+    if (!acc[canonicalDepartment]) {
+      acc[canonicalDepartment] = [];
+    }
+
+    acc[canonicalDepartment].push(courseValue);
+    return acc;
+  }, {});
+
+  const normalizedDepartmentCourses = Object.fromEntries(
+    Object.entries(departmentCourses).map(([department, departmentCourseList]) => [
+      department,
+      uniqueSorted(departmentCourseList),
+    ]),
+  );
+
   return {
-    departments: uniqueSorted((departments ?? []).map((row) => row.department)),
+    departments: normalizedDepartments,
     types: uniqueSorted((types ?? []).map((row) => row.type)),
-    semesters: uniqueSorted((semesters ?? []).map((row) => row.semester)),
+    semesters: uniqueSorted([...MUET_SEMESTERS, ...(semesters ?? []).map((row) => row.semester)]),
     courses: uniqueSorted((courses ?? []).map((row) => row.course)),
+    departmentCourses: normalizedDepartmentCourses,
   };
 }
 

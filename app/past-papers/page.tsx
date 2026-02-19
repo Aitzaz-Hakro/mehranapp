@@ -47,8 +47,8 @@ export default async function PastPapersPage({
 
           {papers.length === 0 ? (
             <EmptyState
-              title="No papers matched your filters"
-              description="Try removing one or more filters to explore a broader result set."
+              title="No papers found"
+              description="past papers will be added soon"
             />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

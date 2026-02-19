@@ -124,8 +124,8 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
             className="mt-1 h-11 w-full rounded-lg border border-[#002147]/15 px-3"
           >
             <option value="">Select type</option>
-            <option value="mid term">mid term</option>
-            <option value="final term">final term</option>
+            <option value="mid term">Mid Term</option>
+            <option value="final term">Final Term</option>
           </select>
         </label>
 

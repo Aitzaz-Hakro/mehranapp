@@ -1,44 +1,10 @@
 import { UploadPaperForm } from "@/components/admin/upload-paper-form";
+import { MUET_DEPARTMENTS, MUET_SEMESTERS } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-const departments = [
-   "Computer Systems",
-   "Computer Science",
-   "Artificial Intelligence",
-   "Cyber Security",
-   "Telecommunication",
-   "BBA",
-   "Textile",
-   "Architecture", 
-   "Mathematics", 
-   "English", 
-   "Electronics",
-   "Petroleum & NG",
-   "Chemical",  
-   "Metallurgy",
-   "Minning",
-   "Industrial",
-   "Biomedical",
-   "Environmental Engineering",
-   "Environmental Science",
-   "City Regional Planning",
-   "Mechatronics",
-   "Software", 
-   "Electrical",
-   "Civil", 
-   "Mechanical",
-     ];
-const semesters = [
-  "Semester 1",
-  "Semester 2",
-  "Semester 3",
-  "Semester 4",
-  "Semester 5",
-  "Semester 6",
-  "Semester 7",
-  "Semester 8",
-];
+const departments = [...MUET_DEPARTMENTS];
+const semesters = [...MUET_SEMESTERS];
 
 export const dynamic = "force-dynamic";
 

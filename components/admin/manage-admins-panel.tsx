@@ -279,8 +279,8 @@ export function ManageAdminsPanel({ initialAdmins }: { initialAdmins: AdminProfi
       {message ? <p className="text-sm text-black/75">{message}</p> : null}
 
       {selectedAdmin ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-2xl rounded-lg bg-white p-5 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 p-4">
+          <div className="max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-5 shadow-xl">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-[#002147]">Admin Uploaded Files</h3>
