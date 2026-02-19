@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     url: "https://mehranapp.vercel.app/",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://mehranapp.vercel.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Mehran APP - Find past papers of every department, semester, and course at MUET.",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/og-image.png"],
+    images: ["https://mehranapp.vercel.app/og-image.png"],
   },
   verification: {
     google: "6FHF-lhzSA10Rwrfqof3DyiUNQ9ZcCpik06HVWa_F9s",
@@ -79,8 +79,8 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/favicon.svg",
-    apple: "/logo.png",
+    icon: "https://mehranapp.vercel.app/favicon.svg",
+    apple: "https://mehranapp.vercel.app/logo.png",
   },
 };
 

@@ -1,6 +1,6 @@
 # mehranapp
 
-MUET Scholar Archive is a production-ready, mobile-first academic SaaS platform built with Next.js App Router, TypeScript, Supabase, and Tailwind CSS.
+Mehran APP  is a production-ready, mobile-first academic SaaS platform built with Next.js App Router, TypeScript, Supabase, and Tailwind CSS.
 
 ## Tech Stack
 

@@ -10,7 +10,7 @@ import {
 } from "@/lib/queries";
 
 export const metadata: Metadata = {
-  title: "Achievements | MUET Scholar Archive",
+  title: "Achievements | Mehran APP",
   description: "Explore successful MUET students and their academic or professional achievements.",
 };
 

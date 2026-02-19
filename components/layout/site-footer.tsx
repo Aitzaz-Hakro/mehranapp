@@ -3,8 +3,8 @@ const currentYear = new Date().getFullYear();
 export function SiteFooter() {
   return (
     <footer className="border-t border-[#001730] bg-[#002147] text-white">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-6 text-sm sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div>
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4 py-6 text-sm sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <div className="text-center lg:text-left">
           <p className="font-semibold text-white">Developed by AItzaz Hassan (23CS)</p>
           <p className="mt-1 text-white/80">© {currentYear} Mehran APP. All rights reserved.</p>
         </div>
