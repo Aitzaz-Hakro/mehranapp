@@ -6,6 +6,7 @@ import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import "./globals.css";
 import { PostHogProvider } from "@/components/Providers/PostHogProvider";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next" 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -107,6 +108,7 @@ export default function RootLayout({
           `}
         </Script>
         <Analytics />
+        <SpeedInsights />
         <SiteShell>{children}</SiteShell>
       </body>
     </html>
