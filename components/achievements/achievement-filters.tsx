@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import type { AchievementFilters } from "@/types/filters";
 
@@ -19,30 +19,24 @@ export function AchievementFiltersPanel({ filters, departments, titles }: Achiev
   const [student, setStudent] = useState(filters.student ?? "");
   const [title, setTitle] = useState(filters.title ?? "");
 
-  const query = useMemo(() => ({ department, student, title }), [department, student, title]);
+  const applyFilters = () => {
+    const params = new URLSearchParams();
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      const params = new URLSearchParams();
+    if (department) {
+      params.set("department", department);
+    }
 
-      if (query.department) {
-        params.set("department", query.department);
-      }
+    if (student.trim()) {
+      params.set("student", student.trim());
+    }
 
-      if (query.student.trim()) {
-        params.set("student", query.student.trim());
-      }
+    if (title) {
+      params.set("title", title);
+    }
 
-      if (query.title) {
-        params.set("title", query.title);
-      }
-
-      const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-      router.replace(url, { scroll: false });
-    }, 350);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [pathname, query, router]);
+    const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(url, { scroll: false });
+  };
 
   const resetAll = () => {
     setDepartment("");
@@ -67,6 +61,13 @@ export function AchievementFiltersPanel({ filters, departments, titles }: Achiev
             setStudent={setStudent}
             setTitle={setTitle}
           />
+          <button
+            type="button"
+            onClick={applyFilters}
+            className="h-10 rounded-lg bg-[#002147] px-3 text-sm font-semibold text-white"
+          >
+            Search
+          </button>
           <button
             type="button"
             onClick={resetAll}
@@ -98,6 +99,13 @@ export function AchievementFiltersPanel({ filters, departments, titles }: Achiev
           setStudent={setStudent}
           setTitle={setTitle}
         />
+        <button
+          type="button"
+          onClick={applyFilters}
+          className="mt-4 h-10 w-full rounded-lg bg-[#002147] px-3 text-sm font-semibold text-white"
+        >
+          Search
+        </button>
       </aside>
     </>
   );

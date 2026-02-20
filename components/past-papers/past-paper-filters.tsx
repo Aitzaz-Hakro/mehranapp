@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 import type { PastPaperFilters } from "@/types/filters";
 
@@ -23,41 +23,32 @@ export function PastPaperFilters({ filters, departments, types, semesters, cours
   const [course, setCourse] = useState(filters.course ?? "");
   const [teacher, setTeacher] = useState(filters.teacher ?? "");
 
-  const query = useMemo(
-    () => ({ type, department, semester, course, teacher }),
-    [type, department, semester, course, teacher],
-  );
+  const applyFilters = () => {
+    const params = new URLSearchParams();
 
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      const params = new URLSearchParams();
+    if (department) {
+      params.set("department", department);
+    }
 
-      if (query.department) {
-        params.set("department", query.department);
-      }
+    if (type) {
+      params.set("type", type);
+    }
 
-      if (query.type) {
-        params.set("type", query.type);
-      }
+    if (semester) {
+      params.set("semester", semester);
+    }
 
-      if (query.semester) {
-        params.set("semester", query.semester);
-      }
+    if (course) {
+      params.set("course", course);
+    }
 
-      if (query.course) {
-        params.set("course", query.course);
-      }
+    if (teacher.trim()) {
+      params.set("teacher", teacher.trim());
+    }
 
-      if (query.teacher.trim()) {
-        params.set("teacher", query.teacher.trim());
-      }
-
-      const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
-      router.replace(url, { scroll: false });
-    }, 350);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [pathname, query, router]);
+    const url = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(url, { scroll: false });
+  };
 
   const resetAll = () => {
     setType("");
@@ -101,6 +92,13 @@ export function PastPaperFilters({ filters, departments, types, semesters, cours
           />
           <button
             type="button"
+            onClick={applyFilters}
+            className="h-10 rounded-lg bg-[#002147] px-3 text-sm font-semibold text-white"
+          >
+            Search
+          </button>
+          <button
+            type="button"
             onClick={resetAll}
             className="h-10 rounded-lg border border-[#002147]/20 px-3 text-sm font-semibold text-[#002147]"
           >
@@ -136,6 +134,13 @@ export function PastPaperFilters({ filters, departments, types, semesters, cours
           setCourse={setCourse}
           setTeacher={setTeacher}
         />
+        <button
+          type="button"
+          onClick={applyFilters}
+          className="mt-4 h-10 w-full rounded-lg bg-[#002147] px-3 text-sm font-semibold text-white"
+        >
+          Search
+        </button>
       </aside>
     </>
   );
