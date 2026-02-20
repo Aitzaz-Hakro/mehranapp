@@ -5,6 +5,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
 import "./globals.css";
 import { PostHogProvider } from "@/components/Providers/PostHogProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -105,6 +106,7 @@ export default function RootLayout({
             gtag('config', 'G-8GM2HSRMYN');
           `}
         </Script>
+        <Analytics />
         <SiteShell>{children}</SiteShell>
       </body>
     </html>

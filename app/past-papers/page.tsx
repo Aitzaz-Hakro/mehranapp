@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/ui/state";
 import { getPastPaperOptions, getPastPapers, parsePastPaperFilters } from "@/lib/queries";
 
 export const metadata: Metadata = {
-  title: "Past Papers | Mehran APP",
+  title: "Past Papers",
   description: "Search and download MUET past papers by department, semester, course, and teacher.",
 };
 
