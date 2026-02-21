@@ -24,6 +24,10 @@ function uniqueSorted(values: string[]) {
   return Array.from(normalizedValueMap.values()).sort((a, b) => a.localeCompare(b));
 }
 
+function normalizeComparableValue(value: string) {
+  return value.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+}
+
 export function parsePastPaperFilters(raw?: Record<string, string | string[] | undefined>): PastPaperFilters {
   const typeValue = normalizeSearchParam(raw?.type);
 
@@ -134,10 +138,6 @@ export async function getPastPapers(filters: PastPaperFilters): Promise<PastPape
     query = query.eq("semester", filters.semester);
   }
 
-  if (filters.course) {
-    query = query.eq("course", filters.course);
-  }
-
   if (filters.teacher) {
     query = query.ilike("teacher_name", `%${filters.teacher}%`);
   }
@@ -148,7 +148,17 @@ export async function getPastPapers(filters: PastPaperFilters): Promise<PastPape
     throw new Error(error.message);
   }
 
-  return data ?? [];
+  let papers = data ?? [];
+
+  if (filters.course) {
+    const normalizedSelectedCourse = normalizeComparableValue(filters.course);
+
+    papers = papers.filter(
+      (paper) => normalizeComparableValue(paper.course) === normalizedSelectedCourse,
+    );
+  }
+
+  return papers;
 }
 
 export async function getAchievements(filters: AchievementFilters): Promise<Achievement[]> {
