@@ -1,4 +1,4 @@
-# <a href="https://mehranapp.vercel.app/"> mehranapp </a>
+# <a href="https://mehranapp.vercel.app/" target="_blank"> mehranapp </a>
 
 Mehran APP  is a production-ready, mobile-first academic SaaS platform built with Next.js App Router, TypeScript, Supabase, and Tailwind CSS.
 
