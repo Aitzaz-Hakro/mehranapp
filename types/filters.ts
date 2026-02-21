@@ -1,5 +1,5 @@
 export interface PastPaperFilters {
-  type?: "mid term" | "final term";
+  type?: "Mid term" | "Final term";
   department?: string;
   semester?: string;
   course?: string;

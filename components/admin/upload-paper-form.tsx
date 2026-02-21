@@ -23,6 +23,12 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const normalizedTeacherName = teacherName.trim();
+    const normalizedDepartment = department.trim();
+    const normalizedSemester = semester.trim();
+    const normalizedCourse = course.trim();
+    const normalizedYear = Number(year);
+
     if (!file) {
       setMessage("Please choose a PDF or image file before uploading.");
       return;
@@ -30,6 +36,16 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
 
     if (!type) {
       setMessage("Please select paper type before uploading.");
+      return;
+    }
+
+    if (!normalizedTeacherName || !normalizedDepartment || !normalizedSemester || !normalizedCourse) {
+      setMessage("Please fill all fields before uploading.");
+      return;
+    }
+
+    if (!Number.isInteger(normalizedYear) || normalizedYear < 2019 || normalizedYear > 2030) {
+      setMessage("Please enter a valid batch year.");
       return;
     }
 
@@ -48,6 +64,30 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
     }
 
     try {
+      const { data: possibleDuplicates, error: duplicateCheckError } = await supabase
+        .from("past_papers")
+        .select("id, teacher_name")
+        .eq("type", type)
+        .eq("department", normalizedDepartment)
+        .eq("semester", normalizedSemester)
+        .eq("course", normalizedCourse)
+        .eq("year", normalizedYear);
+
+      if (duplicateCheckError) {
+        throw duplicateCheckError;
+      }
+
+      const duplicateExists = (possibleDuplicates ?? []).some(
+        (paper) => paper.teacher_name.trim().toLocaleLowerCase() === normalizedTeacherName.toLocaleLowerCase(),
+      );
+
+      if (duplicateExists) {
+        const duplicateMessage = "This past paper already exists in the database.";
+        setMessage(duplicateMessage);
+        window.alert(duplicateMessage);
+        return;
+      }
+
       const filePath = `past-papers/${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("papers")
@@ -60,12 +100,12 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
       const { data: publicData } = supabase.storage.from("papers").getPublicUrl(filePath);
 
       const { error: insertError } = await supabase.from("past_papers").insert({
-        teacher_name: teacherName,
+        teacher_name: normalizedTeacherName,
         type,
-        department,
-        semester,
-        course,
-        year: Number(year),
+        department: normalizedDepartment,
+        semester: normalizedSemester,
+        course: normalizedCourse,
+        year: normalizedYear,
         file_url: publicData.publicUrl,
         uploaded_by: user.id,
       });
