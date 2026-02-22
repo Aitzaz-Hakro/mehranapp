@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { SiteShell } from "@/components/layout/site-shell";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/constants";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/constants";
 import "./globals.css";
 import { PostHogProvider } from "@/components/Providers/PostHogProvider";
 import { Analytics } from "@vercel/analytics/next";
@@ -49,15 +49,15 @@ export const metadata: Metadata = {
     "Mehran University achievers",
     "MUET exam preparation",
   ],
-  metadataBase: new URL("https://mehranapp.vercel.app/"),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
     type: "website",
-    url: "https://mehranapp.vercel.app/",
+    url: SITE_URL,
     images: [
       {
-        url: "https://mehranapp.vercel.app/og-image.png",
+        url: `${SITE_URL}/og-image.png`,
         width: 1200,
         height: 630,
         alt: "Mehran APP - Find past papers of every department, semester, and course at MUET.",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["https://mehranapp.vercel.app/og-image.png"],
+    images: [`${SITE_URL}/og-image.png`],
   },
   verification: {
     google: "6FHF-lhzSA10Rwrfqof3DyiUNQ9ZcCpik06HVWa_F9s",
@@ -81,8 +81,8 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "https://mehranapp.vercel.app/favicon.svg",
-    apple: "https://mehranapp.vercel.app/logo.png",
+    icon: `${SITE_URL}/favicon.svg`,
+    apple: `${SITE_URL}/logo.png`,
   },
 };
 
