@@ -34,7 +34,7 @@ export function MotiveSection() {
             </p>
           </article>
           <article className="rounded-lg border border-[#002147]/10 bg-[#f8faff] p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-black">Built by me for MUET students</h3>
+            <h3 className="text-lg font-semibold text-black">Built by student for MUET students</h3>
             <p className="mt-2 text-sm leading-6 text-black/75">
               As a student developer, my motive is simple: save time, reduce dependency, and make
               exam preparation smoother for every junior and senior.
