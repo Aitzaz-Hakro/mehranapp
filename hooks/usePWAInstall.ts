@@ -1,0 +1,79 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
+export function usePWAInstall() {
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if app is already installed
+    const checkInstalled = () => {
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        setIsInstalled(true);
+        setIsInstallable(false);
+        return true;
+      }
+      // Check for iOS standalone mode
+      if ((navigator as unknown as { standalone?: boolean }).standalone === true) {
+        setIsInstalled(true);
+        setIsInstallable(false);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkInstalled()) return;
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setInstallPrompt(e as BeforeInstallPromptEvent);
+      setIsInstallable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      setInstallPrompt(null);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, []);
+
+  const installApp = useCallback(async () => {
+    if (!installPrompt) return false;
+
+    try {
+      await installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+
+      if (outcome === "accepted") {
+        setIsInstalled(true);
+        setIsInstallable(false);
+        setInstallPrompt(null);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, [installPrompt]);
+
+  return {
+    isInstallable,
+    isInstalled,
+    installApp,
+  };
+}

@@ -76,8 +76,19 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: `${SITE_URL}/favicon.svg`,
-    apple: `${SITE_URL}/logo.png`,
+    icon: [
+      { url: "/icon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icon-152x152.png", sizes: "152x152", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/icon-512x512.png" },
+    ],
   },
 };
 

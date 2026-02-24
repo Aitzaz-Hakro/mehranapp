@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,7 @@ export function SiteHeader() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [canUpload, setCanUpload] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const { isInstallable, installApp } = usePWAInstall();
 
   useEffect(() => {
     const supabase = createClient();
@@ -102,7 +104,8 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#001730] bg-[#002147]/95 text-white backdrop-blur-sm">
+    <>
+      <header className="sticky top-0 z-50 border-b border-[#001730] bg-[#002147]/95 text-white backdrop-blur-sm">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
           <Image 
@@ -176,6 +179,25 @@ export function SiteHeader() {
             >
               Sign in
             </Link>
+          )}
+
+          {isInstallable && (
+            <button
+              type="button"
+              onClick={installApp}
+              className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-[#002147] transition hover:bg-white/90"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="size-4"
+              >
+                <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+                <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+              </svg>
+              Install App
+            </button>
           )}
         </nav>
 
@@ -286,6 +308,28 @@ export function SiteHeader() {
           </ul>
         </nav>
       ) : null}
-    </header>
+      </header>
+
+      {/* Floating Install App button for mobile */}
+      {isInstallable && (
+        <button
+          type="button"
+          onClick={() => void installApp()}
+          className="fixed bottom-6 right-4 z-50 flex items-center gap-2 rounded-full bg-[#002147] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#003166] active:scale-95 md:hidden"
+          aria-label="Install App"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+            <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+          </svg>
+          Install App
+        </button>
+      )}
+    </>
   );
 }
