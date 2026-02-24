@@ -4,8 +4,8 @@
   "description": "Find past papers of every department, semester, and course at MUET. Explore achievements of MUET students and teachers. Your ultimate resource for MUET exam preparation and success.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1E3D",
-  "theme_color": "#0B1E3D",
+  "background_color": "#FFFFFF",
+  "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
