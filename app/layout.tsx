@@ -7,6 +7,7 @@ import "./globals.css";
 import { PostHogProvider } from "@/components/Providers/PostHogProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next" 
+import OneSignalInit from "@/components/layout/OneSignalInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -101,6 +102,8 @@ export default function RootLayout({
     <PostHogProvider>
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
+        <OneSignalInit />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-8GM2HSRMYN"
           strategy="afterInteractive"
