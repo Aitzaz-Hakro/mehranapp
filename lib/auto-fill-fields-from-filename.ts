@@ -18,10 +18,33 @@ const SUBJECT_ALIASES: Record<string, string> = {
 
 const DEPARTMENT_ALIASES: Record<string, string> = {
   cs: "Computer Science",
+  bscs: "Computer Science",
+  becs: "Computer Systems",
   cse: "Computer Systems",
   se: "Software",
   ai: "Artificial Intelligence",
   bba: "BBA",
+  el: "Electrical",
+  es: "Electronics",
+  ce: "Civil",
+  me: "Mechanical",
+  mte: "Mechatronics",
+  sw: "Software",
+  tl: "Telecommunication",
+  cys: "Cyber Security",
+  bse:"English",
+  te: "Textile",
+  bsm: "Mathematics",
+  png: "Petroleum and NG",
+  ch: "Chemical",
+  mt:"metallurgy",
+  mn: "Mining",
+  in: "Industrial",
+  bm: "Biomedical",
+  ee:"Environmental Engineering",
+  bses:"environmental science",
+  crp: "City Regional Planning",
+
 };
 
 const MID_TOKENS = new Set(["mid", "midterm", "midterms"]);
