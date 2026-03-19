@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 
+import { autoFillFieldsFromFileName } from "@/lib/auto-fill-fields-from-filename";
 import { createClient } from "@/lib/supabase/client";
 
 interface UploadFormProps {
@@ -17,8 +18,54 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
   const [course, setCourse] = useState("");
   const [year, setYear] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [selectedFileSummary, setSelectedFileSummary] = useState("No file selected");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(event.target.files ?? []);
+    const primaryFile = selectedFiles[0] ?? null;
+
+    setFile(primaryFile);
+
+    if (!primaryFile) {
+      setSelectedFileSummary("No file selected");
+      return;
+    }
+
+    if (selectedFiles.length > 1) {
+      setSelectedFileSummary(`${primaryFile.name} (+${selectedFiles.length - 1} more selected)`);
+    } else {
+      setSelectedFileSummary(primaryFile.name);
+    }
+
+    const autoFilled = autoFillFieldsFromFileName(primaryFile.name, departments, semesters);
+
+    // Only update fields that are confidently detected from the filename.
+    if (autoFilled.teacherName) {
+      setTeacherName(autoFilled.teacherName);
+    }
+
+    if (autoFilled.type) {
+      setType(autoFilled.type);
+    }
+
+    if (autoFilled.department) {
+      setDepartment(autoFilled.department);
+    }
+
+    if (autoFilled.semester) {
+      setSemester(autoFilled.semester);
+    }
+
+    if (autoFilled.course) {
+      setCourse(autoFilled.course);
+    }
+
+    if (autoFilled.year) {
+      setYear(autoFilled.year);
+    }
+  };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -122,6 +169,7 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
       setCourse("");
       setYear("");
       setFile(null);
+      setSelectedFileSummary("No file selected");
     } catch (error) {
       const fallbackMessage = "Upload failed. Please verify your input and storage configuration.";
 
@@ -233,14 +281,15 @@ export function UploadPaperForm({ departments, semesters, }: UploadFormProps) {
             className="mt-1 flex min-h-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#002147]/25 bg-[#f3f6fb] px-4 py-5 text-center"
           >
             <span className="text-sm font-semibold text-[#002147]">Click to choose file</span>
-            <span className="mt-1 text-xs text-black/70">PDF, PNG, JPG, JPEG</span>
-            <span className="mt-2 text-xs text-black/75">{file ? file.name : "No file selected"}</span>
+            <span className="mt-1 text-xs text-black/70">PDF, PNG, JPG, JPEG (auto-fills fields from file name)</span>
+            <span className="mt-2 text-xs text-black/75">{selectedFileSummary}</span>
           </label>
           <input
             id="paper-file"
             type="file"
             accept="application/pdf,image/png,image/jpeg"
-            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+            multiple
+            onChange={onFileChange}
             required
             className="sr-only"
           />
